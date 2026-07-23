@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>力学 期末試験 完全攻略ガイド (2023)</title>
+  <meta name="description" content="力学の期末試験を、授業に一度も出ていない人でも理解できるように「問題文・意味・ヒント・解説」の4ステップでやさしく解説">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🪐</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- ヘッダー -->
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="#top">
+        <span class="brand-mark">F</span>
+        <span class="brand-text">力学 完全攻略</span>
+      </a>
+      <nav class="header-nav">
+        <a href="#problems">問題一覧</a>
+        <a href="#glossary">用語辞典</a>
+        <button id="theme-toggle" class="theme-toggle" aria-label="テーマ切替" title="ライト/ダーク切替">
+          <span class="icon-sun">☀️</span><span class="icon-moon">🌙</span>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ヒーロー -->
+  <section class="hero" id="top">
+    <div class="hero-bg"></div>
+    <div class="hero-inner">
+      <p class="hero-eyebrow">CLASSICAL MECHANICS — FINAL EXAM 2023 &amp; 2025</p>
+      <h1 class="hero-title">授業に出てなくても、<br><span class="grad-text">ぜんぶ分かる。</span></h1>
+      <p class="hero-lead">
+        力学の期末試験・<b>2023年度と2025年度</b>の全56問を「<b>問題文</b> → <b>問題の意味</b> → <b>ヒント</b> → <b>解説</b>」の
+        4ステップで徹底的にやさしく解説。<br>
+        ベクトル解析・剛体・振動・ケプラー運動・衝突・空気抵抗まで、いきなり答えを見ない設計で自力で解く力がつきます。（年度で絞り込めます）
+      </p>
+      <div class="hero-stats">
+        <div class="stat"><span class="stat-num">56</span><span class="stat-label">問題</span></div>
+        <div class="stat"><span class="stat-num">2</span><span class="stat-label">年度</span></div>
+        <div class="stat"><span class="stat-num" id="stat-done">0</span><span class="stat-label">クリア済み</span></div>
+      </div>
+      <div class="progress-wrap">
+        <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+        <span class="progress-text" id="progress-text">0 / 56 問クリア</span>
+      </div>
+      <a class="hero-cta" href="#problems">学習をはじめる ↓</a>
+    </div>
+  </section>
+
+  <!-- 使い方 -->
+  <section class="howto">
+    <div class="howto-inner">
+      <div class="howto-step"><span class="howto-emoji">📄</span><h3>1. 問題文</h3><p>試験に出た問題をそのまま掲載</p></div>
+      <div class="howto-step"><span class="howto-emoji">🤔</span><h3>2. 問題の意味</h3><p>「そもそも何を聞かれてる？」を日本語に翻訳</p></div>
+      <div class="howto-step"><span class="howto-emoji">💡</span><h3>3. ヒント</h3><p>段階的に開けるヒントで自力チャレンジ</p></div>
+      <div class="howto-step"><span class="howto-emoji">✅</span><h3>4. 解説</h3><p>途中式を一切省略しない完全解説</p></div>
+    </div>
+  </section>
+
+  <!-- フィルタ -->
+  <section class="filter-bar" id="problems">
+    <div class="filter-inner">
+      <h2 class="section-title">問題一覧</h2>
+      <div class="filter-chips" id="filter-chips">
+        <button class="chip active" data-filter="all">すべて</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 問題カード（JSで生成） -->
+  <main class="problems-container" id="problems-container"></main>
+
+  <!-- 用語辞典 -->
+  <section class="glossary" id="glossary">
+    <div class="glossary-inner">
+      <h2 class="section-title">🔍 つまずきやすい用語ミニ辞典</h2>
+      <div class="glossary-grid" id="glossary-grid"></div>
+    </div>
+  </section>
+
+  <!-- フッター -->
+  <footer class="site-footer">
+    <p>力学 期末試験(2023) 学習用解説サイト — 教育目的で作成</p>
+    <p class="footer-sub">数式レンダリング: <a href="https://katex.org" target="_blank" rel="noopener">KaTeX</a></p>
+  </footer>
+
+  <!-- モーダル（問題詳細） -->
+  <div class="modal-overlay" id="modal-overlay" hidden>
+    <div class="modal" role="dialog" aria-modal="true">
+      <button class="modal-close" id="modal-close" aria-label="閉じる">✕</button>
+      <div class="modal-content" id="modal-content"></div>
+    </div>
+  </div>
+
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+  <script defer src="js/data.js"></script>
+  <script defer src="js/glossary.js"></script>
+  <script defer src="js/main.js"></script>
+</body>
+</html>
