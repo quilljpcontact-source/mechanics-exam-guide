@@ -370,6 +370,42 @@ a { color: var(--accent); text-decoration: none; }
 /* hidden属性をdisplay:gridより優先させる（これがないとモーダルが常時表示される） */
 .modal-overlay[hidden] { display: none; }
 
+/* ---------- アニメーション図 ---------- */
+.anim-wrap {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+.anim-canvas {
+  display: block;
+  width: 100%;
+  height: 300px;
+  border-radius: 12px;
+  background: var(--bg-soft);
+  cursor: pointer;
+  touch-action: manipulation;
+}
+.anim-hint {
+  text-align: center;
+  font-size: 0.82rem;
+  color: var(--text-sub);
+  margin-top: 0.6rem;
+}
+.anim-cap {
+  font-size: 0.9rem;
+  color: var(--text);
+  margin-top: 0.5rem;
+  padding: 0.7rem 0.9rem;
+  background: var(--accent-soft);
+  border-radius: 10px;
+  line-height: 1.6;
+}
+@media (max-width: 640px) {
+  .anim-canvas { height: 240px; }
+}
+
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
 .modal {

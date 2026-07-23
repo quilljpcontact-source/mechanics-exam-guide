@@ -13,6 +13,7 @@
   let doneSet = new Set(JSON.parse(localStorage.getItem(STORAGE_DONE) || "[]"));
   let currentFilter = "all";
   let currentIndex = -1;
+  let currentAnim = null;
 
   /* ---------- KaTeX レンダリング ---------- */
   function renderMath(el) {
@@ -127,9 +128,12 @@
   const modalClose = document.getElementById("modal-close");
 
   function openModal(index) {
+    if (currentAnim) { currentAnim.stop(); currentAnim = null; }
     currentIndex = index;
     const p = PROBLEMS[index];
     const isDone = doneSet.has(p.id);
+    const animType = (typeof ANIM_BY_ID !== "undefined") ? ANIM_BY_ID[p.id] : null;
+    const hasAnim = animType && typeof ANIMATIONS !== "undefined" && ANIMATIONS[animType];
 
     modalContent.innerHTML = `
       <header class="modal-header">
@@ -143,6 +147,7 @@
       <div class="tabs" role="tablist">
         <button class="tab-btn active" data-tab="statement" role="tab">📄 問題文</button>
         <button class="tab-btn" data-tab="meaning" role="tab">🤔 問題の意味</button>
+        ${hasAnim ? '<button class="tab-btn" data-tab="anim" role="tab">🎬 図で見る</button>' : ""}
         <button class="tab-btn" data-tab="hints" role="tab">💡 ヒント</button>
         <button class="tab-btn" data-tab="solution" role="tab">✅ 解説</button>
       </div>
@@ -152,7 +157,7 @@
           <h4>📄 問題文</h4>
           ${p.statement}
         </div>
-        <p style="color: var(--text-sub); font-size: 0.88rem;">まずは自力で考えてみよう。分からない言葉があったら「問題の意味」タブへ。</p>
+        <p style="color: var(--text-sub); font-size: 0.88rem;">まずは自力で考えてみよう。分からない言葉があったら「問題の意味」タブへ。${hasAnim ? "動きのイメージは「🎬 図で見る」タブでどうぞ。" : ""}</p>
       </section>
 
       <section class="tab-panel" data-panel="meaning">
@@ -161,6 +166,15 @@
           ${p.meaning}
         </div>
       </section>
+
+      ${hasAnim ? `
+      <section class="tab-panel" data-panel="anim">
+        <div class="anim-wrap">
+          <canvas class="anim-canvas" id="anim-canvas"></canvas>
+          <p class="anim-hint">▶ 図をクリック / タップで動かせます（もう一度で一時停止）</p>
+          <p class="anim-cap">${(typeof ANIM_CAPTION !== "undefined" && ANIM_CAPTION[animType]) || ""}</p>
+        </div>
+      </section>` : ""}
 
       <section class="tab-panel" data-panel="hints">
         ${p.hints.map((h, i) => `
@@ -202,6 +216,11 @@
       tab.addEventListener("click", () => {
         tabs.forEach(t => t.classList.toggle("active", t === tab));
         panels.forEach(pn => pn.classList.toggle("active", pn.dataset.panel === tab.dataset.tab));
+        // アニメーションタブを初めて開いたら起動（canvasにサイズがついてから）
+        if (tab.dataset.tab === "anim" && hasAnim && !currentAnim) {
+          const cv = modalContent.querySelector("#anim-canvas");
+          if (cv) currentAnim = ANIMATIONS[animType](cv);
+        }
       });
     });
 
@@ -240,6 +259,7 @@
   }
 
   function closeModal() {
+    if (currentAnim) { currentAnim.stop(); currentAnim = null; }
     overlay.hidden = true;
     document.body.style.overflow = "";
   }
